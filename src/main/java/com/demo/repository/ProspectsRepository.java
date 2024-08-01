@@ -1,6 +1,7 @@
 package com.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.demo.entity.Prospects;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 public interface ProspectsRepository extends JpaRepository<Prospects, Integer> {
 
     Prospects findByProspectId(Long prospectId);
+    
 
     List<Prospects> findByUserId(int userId);
 

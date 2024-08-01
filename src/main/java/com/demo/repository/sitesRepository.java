@@ -2,15 +2,19 @@ package com.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.demo.entity.sites;
+import com.demo.entity.Sites;
 import java.util.List;
 
-public interface sitesRepository extends JpaRepository<sites, Integer> {
+public interface SitesRepository extends JpaRepository<Sites, Integer> {
 
-    List<sites> findBySiteId(int siteId);
+    Sites findBySiteId(int siteId);
 
-    List<sites> findByLibelle(String libelle);
+    List<Sites> findByLibelle(String libelle);
 
-    List<sites> findByActif(String actif);
+    List<Sites> findByActif(String actif);
+
+    List<Sites> findByRegion(String Region);
+ 
+    List<Sites> findAll();
 
 }

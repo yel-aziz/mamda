@@ -14,4 +14,6 @@ public interface psp_TicketRepository extends JpaRepository<psp_Ticket, Integer>
 
     List<psp_Ticket> findByActive(char active);
 
+    psp_Ticket findById(int id);
+
 }

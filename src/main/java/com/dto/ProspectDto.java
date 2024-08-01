@@ -10,10 +10,12 @@ import jakarta.persistence.TemporalType;
 public class ProspectDto {
 
     private String nom;
-    private int villeId;
-    private int assureurId;
-    private int userId;
+    private Integer villeId;
+    private Integer assureurId;
+    private Integer userId;
     private String reference;
+
+    private Long prospectid;
 
     private String adresse;
 
@@ -25,7 +27,7 @@ public class ProspectDto {
 
     private BigDecimal chiffreAffaire;
 
-    private int effectif;
+    private Integer effectif;
 
     private String dirigeant;
 
@@ -41,7 +43,7 @@ public class ProspectDto {
 
     private String telInterlocuteur;
 
-    private int placerAu;
+    private Integer placerAu;
 
     private String suiteProg;
 
@@ -58,6 +60,10 @@ public class ProspectDto {
 
     // Getters and setters
 
+    public Long getPropectId(){
+        return prospectid;
+    }
+    
     public int getUserId() {
         return userId;
     }

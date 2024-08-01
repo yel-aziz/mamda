@@ -25,7 +25,7 @@ public class Prospects {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "prospectId")
-    private int prospectId;
+    private Long prospectId;
 
     @Column(name = "userId")
     private int userId;
@@ -93,7 +93,7 @@ public class Prospects {
     @ManyToOne
     @JoinColumn(name = "userprospect", nullable = false)
     @JsonBackReference
-    private users user;
+    private Users user;
 
     @Column(name = "suiteProg", length = 150)
     private String suiteProg;
@@ -134,13 +134,37 @@ public class Prospects {
         this.setNotes(obj.getNotes());
         this.setCloture(obj.getCloture());
         this.setTypePsp(obj.getTypePsp());
+        this.setDateCreation(new Date());
     }
 
-    public int getProspectId() {
+    public void ProspectsUpdate(ProspectDto obj) {
+
+        this.setNom(obj.getNom());
+        this.setAdresse(obj.getAdresse());
+        this.setEmail(obj.getEmail());
+        this.setTel(obj.getTel());
+        this.setActivite(obj.getActivite());
+        this.setChiffreAffaire(obj.getChiffreAffaire());
+        this.setEffectif(obj.getEffectif());
+        this.setDirigeant(obj.getDirigeant());
+        this.setIntermediaire(obj.getIntermediaire());
+        this.setCotisation(obj.getCotisation());
+        this.setRisque(obj.getRisque());
+        this.setFonctionInterlocuteur(obj.getFonctionInterlocuteur());
+        this.setTelInterlocuteur(obj.getTelInterlocuteur());
+        this.setPlacerAu(obj.getPlacerAu());
+        this.setSuiteProg(obj.getSuiteProg());
+        this.setNotes(obj.getNotes());
+        this.setCloture(obj.getCloture());
+        this.setTypePsp(obj.getTypePsp());
+
+    }
+
+    public Long getProspectId() {
         return prospectId;
     }
 
-    public void setProspectId(int prospectId) {
+    public void setProspectId(Long prospectId) {
         this.prospectId = prospectId;
     }
 
@@ -152,11 +176,11 @@ public class Prospects {
         this.userId = userId;
     }
 
-    public users getUser() {
+    public Users getUser() {
         return this.user;
     }
 
-    public void setUser(users obj) {
+    public void setUser(Users obj) {
         this.user = obj;
     }
 

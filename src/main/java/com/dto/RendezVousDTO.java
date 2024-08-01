@@ -1,77 +1,20 @@
-package com.demo.entity;
+package com.dto;
 
-import jakarta.persistence.*;
 import java.util.Date;
 
-import com.dto.RendezVousDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+public class RendezVousDTO {
 
-@Entity
-@Table(name = "psp_RendezVous")
-public class psp_RendezVous {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idRDV;
-
     private int idPsp;
-
-    @Column(length = 500)
     private String nomPsp;
-
     private Date dateRdv;
-
-    @Column(length = 6)
     private String heure;
-
-    @Column(length = 500)
     private String adresse;
-
-    @Temporal(TemporalType.DATE)
     private Date dateCreation;
-
-    @ManyToOne
-    @JoinColumn(name = "userendezvous", nullable = false)
-    @JsonBackReference
-    private Users user;
-
+    private int idUsers;
     private int statut;
-
     private int typeRdv;
-
-    @Column(columnDefinition = "TEXT")
     private String cr;
-
-    public psp_RendezVous() {
-
-    }
-
-    public psp_RendezVous(RendezVousDTO obj) {
-
-        this.setIdRDV(obj.getIdRDV());
-        this.setIdPsp(obj.getIdPsp());
-        this.setNomPsp(obj.getNomPsp());
-        this.setDateRdv(obj.getDateRdv());
-        this.setHeure(obj.getHeure());
-        this.setAdresse(obj.getAdresse());
-        this.setDateCreation(obj.getDateCreation());
-        this.setStatut(obj.getStatut());
-        this.setTypeRdv(obj.getTypeRdv());
-        this.setCr(obj.getCr());
-    }
-
-    public void update_RendezVous(RendezVousDTO obj) {
-
-        this.setIdPsp(obj.getIdPsp());
-        this.setNomPsp(obj.getNomPsp());
-        this.setDateRdv(obj.getDateRdv());
-        this.setHeure(obj.getHeure());
-        this.setAdresse(obj.getAdresse());
-        this.setDateCreation(obj.getDateCreation());
-        this.setStatut(obj.getStatut());
-        this.setTypeRdv(obj.getTypeRdv());
-        this.setCr(obj.getCr());
-    }
 
 
     public int getIdRDV() {
@@ -80,14 +23,6 @@ public class psp_RendezVous {
 
     public void setIdRDV(int idRDV) {
         this.idRDV = idRDV;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    public Users getUser(){
-        return this.user;
     }
 
     public int getIdPsp() {
@@ -136,6 +71,14 @@ public class psp_RendezVous {
 
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
+    }
+
+    public int getIdUsers() {
+        return idUsers;
+    }
+
+    public void setIdUsers(int idUsers) {
+        this.idUsers = idUsers;
     }
 
     public int getStatut() {

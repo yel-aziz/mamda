@@ -2,24 +2,24 @@ package com.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.demo.entity.users;
+import com.demo.entity.Users;
 import java.util.List;
 
-public interface usersRepository extends JpaRepository<users, Integer> {
+public interface UsersRepository extends JpaRepository<Users, Integer> {
 
-    users findByUserId(int userId);
+    Users findByUserId(int userId);
 
 
-    List<users> findByInitial(String initial);
+    List<Users> findByInitial(String initial);
 
-    List<users> findByProfil(String profil);
+    List<Users> findByProfil(String profil);
 
-    users findByLogin(String login);
+    Users findByLogin(String login);
 
-    List<users> findByPassword(String password);
+    List<Users> findByPassword(String password);
 
-    List<users> findByActif(String actif);
+    List<Users> findByActif(String actif);
 
-    List<users> findByBackOfficeAccess(String backOfficeAccess);
+    List<Users> findByBackOfficeAccess(String backOfficeAccess);
 
 }

@@ -22,9 +22,10 @@ public class JwtUtil {
         this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
-    public String generateToken(String username, long expirationMs,int userId) {
+    public String generateToken(String username, long expirationMs,int userId ,String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))

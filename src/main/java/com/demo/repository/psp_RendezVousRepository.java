@@ -9,7 +9,7 @@ import java.util.Date;
 
 public interface psp_RendezVousRepository extends JpaRepository<psp_RendezVous, Integer> {
 
-    List<psp_RendezVous> findByIdRDV(int idRDV);
+    psp_RendezVous findByIdRDV(Long idRDV);
 
     List<psp_RendezVous> findByIdPsp(int idPsp);
 
@@ -23,7 +23,7 @@ public interface psp_RendezVousRepository extends JpaRepository<psp_RendezVous, 
 
     List<psp_RendezVous> findByDateCreation(Date dateCreation);
 
-    List<psp_RendezVous> findByIdUsers(int idUsers);
+
 
     List<psp_RendezVous> findByStatut(int statut);
 

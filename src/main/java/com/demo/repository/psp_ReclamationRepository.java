@@ -9,7 +9,7 @@ import java.util.Date;
 
 public interface psp_ReclamationRepository extends JpaRepository<psp_Reclamation, Integer> {
 
-    List<psp_Reclamation> findByIdReclamation(int idReclamation);
+psp_Reclamation findByIdReclamation(Long idReclamation);
 
     List<psp_Reclamation> findByIdUser(int idUser);
 

@@ -12,7 +12,7 @@ public interface CompagnieRepository extends JpaRepository<Compagnie, Integer> {
 
     // Custom query methods
     // Find all active companies
-    List<Compagnie> findByCompanieId(int companieId);
+    Compagnie findByCompanieId(Long companieId);
 
     List<Compagnie> findByActif(String actif);
 
