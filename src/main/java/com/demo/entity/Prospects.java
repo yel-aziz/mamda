@@ -30,6 +30,9 @@ public class Prospects {
     @Column(name = "userId")
     private int userId;
 
+    @Column(name = "siteId")
+    private int siteId;
+
     @Column(name = "villeId")
     private int villeId;
 
@@ -166,6 +169,14 @@ public class Prospects {
 
     public void setProspectId(Long prospectId) {
         this.prospectId = prospectId;
+    }
+
+    public void setSiteId(int id) {
+        this.siteId = id;
+    }
+
+    public int getSiteById() {
+        return this.siteId;
     }
 
     public int getUserId() {

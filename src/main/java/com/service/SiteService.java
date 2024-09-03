@@ -22,7 +22,7 @@ public class SiteService {
 
     public Sites creatSite(String officeName,String Region) {
         Sites obj = new Sites();
-        obj.setActif("y");
+        obj.setActif(1);
         obj.setLibelle(officeName);
         obj.setregion(Region);
         SitesRepository.save(obj);
@@ -47,9 +47,14 @@ public class SiteService {
 
     }
 
-    public List<Sites> getAllsitesByRegion(String reg) {
+    public void updateStatus(int id,int status){
+        Sites site = this.SitesRepository.findBySiteId(id);
+        site.setActif(status);
+        this.SitesRepository.save(site);
+    }
 
-       return this.SitesRepository.findByRegion(reg);
+    public List<Sites> getAllsitesByRegion(String reg) {
+        return this.SitesRepository.findByRegion(reg);
     }
 
     public Sites getSiteById(int site) {

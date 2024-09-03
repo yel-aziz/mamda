@@ -17,14 +17,14 @@ public class psp_Ticket {
     @JsonBackReference
     private Users user;
 
-    @Column(name = "idType")
-    private int idType;
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "prospectName")
+    private String prospectName;
 
     @Column(length = 100)
-    private String libelleT;
-
-    @Column(length = 1)
-    private char active;
+    private String motif;
 
     // Getters and setters
 
@@ -35,6 +35,13 @@ public class psp_Ticket {
     public void setIdticket(int idticket) {
         this.idticket = idticket;
     }
+    public String getIdProspect() {
+        return this.prospectName;
+    }
+
+    public void setprospectName(String Name) {
+        this.prospectName = Name;
+    }
 
     public Users getUser() {
         return user;
@@ -44,27 +51,19 @@ public class psp_Ticket {
         this.user = user;
     }
 
-    public int getIdType() {
-        return idType;
+    public String gettype() {
+        return type;
     }
 
-    public void setIdType(int idType) {
-        this.idType = idType;
+    public void settype(String type) {
+        this.type = type;
     }
 
-    public String getLibelleT() {
-        return libelleT;
+    public String getmotif() {
+        return motif;
     }
 
-    public void setLibelleT(String libelleT) {
-        this.libelleT = libelleT;
-    }
-
-    public char getActive() {
-        return active;
-    }
-
-    public void setActive(char active) {
-        this.active = active;
+    public void setmotif(String motif) {
+        this.motif = motif;
     }
 }

@@ -14,6 +14,7 @@ public class ProspectDto {
     private Integer assureurId;
     private Integer userId;
     private String reference;
+private int[] produits;
 
     private Long prospectid;
 
@@ -63,6 +64,14 @@ public class ProspectDto {
     public Long getPropectId(){
         return prospectid;
     }
+
+    public void setProduits(int[] a){
+        this.produits = a;
+    }
+
+    public int[] getProduits(){
+        return this.produits;
+    }
     
     public int getUserId() {
         return userId;
@@ -72,6 +81,7 @@ public class ProspectDto {
         this.userId = userId;
     }
 
+  
     public int getVilleId() {
         return villeId;
     }

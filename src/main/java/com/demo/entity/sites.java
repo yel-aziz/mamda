@@ -22,7 +22,7 @@ public class Sites {
     private String region;
 
     @Column(length = 1, nullable = false)
-    private String actif;
+    private int actif;
 
     @OneToMany(mappedBy = "site", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -60,11 +60,11 @@ public class Sites {
         this.libelle = libelle;
     }
 
-    public String getActif() {
+    public int getActif() {
         return actif;
     }
 
-    public void setActif(String actif) {
+    public void setActif(int actif) {
         this.actif = actif;
     }
 

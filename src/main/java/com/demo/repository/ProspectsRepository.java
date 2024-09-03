@@ -11,9 +11,10 @@ import java.math.BigDecimal;
 public interface ProspectsRepository extends JpaRepository<Prospects, Integer> {
 
     Prospects findByProspectId(Long prospectId);
-    
 
     List<Prospects> findByUserId(int userId);
+
+    List<Prospects> findAllByUserId(int userId);
 
     List<Prospects> findByVilleId(int villeId);
 
@@ -62,6 +63,5 @@ public interface ProspectsRepository extends JpaRepository<Prospects, Integer> {
     List<Prospects> findByCloture(String cloture);
 
     List<Prospects> findByTypePsp(int typePsp);
-
 
 }

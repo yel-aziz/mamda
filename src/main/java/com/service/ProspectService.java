@@ -1,5 +1,7 @@
 package com.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,9 +27,9 @@ public class ProspectService {
     public void CreatProspect(int id, ProspectDto obj) {
 
         Prospects pros = new Prospects(obj);
-        System.out.print(obj);
-
+        pros.setUserId(id);
         Users user = userRepository.findByUserId(id);
+        pros.setSiteId(user.getIDSite());
         pros.setUser(user);
         this.prospectsRepository.save(pros);
 
@@ -35,6 +37,12 @@ public class ProspectService {
 
     public Prospects getProspects(Long id) {
         return this.prospectsRepository.findByProspectId(id);
+    }
+    public List<Prospects> getAllProspects() {
+        return this.prospectsRepository.findAll();
+    }
+    public List<Prospects> getAllProspectsByUserId(int id) {
+        return this.prospectsRepository.findAllByUserId(id);
     }
 
     public ResponseEntity<String> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {

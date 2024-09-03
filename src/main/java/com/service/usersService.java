@@ -6,26 +6,35 @@ import java.util.List;
 import java.util.Comparator;
 import com.demo.JwtUtil;
 import com.demo.entity.Prospects;
+import com.demo.entity.Sites;
 import com.demo.entity.Users;
+import com.demo.repository.SitesRepository;
 import com.demo.repository.UsersRepository;
+import com.dto.UserDto;
+
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
-
 public class UsersService {
 
     @Autowired
     private UsersRepository userRepository;
 
     @Autowired
+    private SitesRepository sitesRepository;
+
+    @Autowired
     private JwtUtil jwt;
+
+    @Autowired
+    private SiteService siteService;
 
     private static String hashPassword(String password) {
         try {
@@ -62,32 +71,50 @@ public class UsersService {
         return this.userRepository.findByLogin(login);
     }
 
-    public String[] getSession(HttpServletRequest request) {
+    public void UpdateUser(@ModelAttribute UserDto data, int id) {
 
-        String[] sessionnotfound = { "NULL", "NULL", "NULL" };
-
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("login") != null) {
-            String email = (String) session.getAttribute("login");
-            String role = (String) session.getAttribute("role");
-            String Id = (String) session.getAttribute("Id");
-            String[] strings = { email, role, Id };
-            // System.out.println(Id);
-
-            return strings;
-        }
-        return sessionnotfound;
-    }
-
-    public int CreatUser(String Username, String password, String role, String Region) {
-        Users obj = new Users();
+        Users obj = this.getUserById(id);
+        Sites site = this.sitesRepository.findBySiteId(data.getsite());
 
         obj.setActif("1");
-        obj.setLogin(Username);
-        obj.setPassword(password);
+        obj.setFullName(data.getFullName());
+
         obj.setBackOfficeAccess("1");
-        obj.setRole(role);
-        obj.setRegion(Region);
+        obj.setLogin(data.getLogin());
+        obj.setEmail(data.getEmail());
+        obj.setRole(data.getRole());
+        obj.setidsite(data.getsite());
+        obj.setPhoneNumber(data.getPhoneNumber());
+
+        obj.setSites(site);
+
+        obj.setRegion(data.getRegion());
+
+        userRepository.save(obj);
+    }
+
+    public int CreatUser(@ModelAttribute UserDto data) {
+        Users obj = new Users();
+        String hashedPassword = hashPassword(data.getPassword());
+        Users check = this.userRepository.findByLogin(data.getLogin());
+        if (check != null) {
+            return 0;
+        }
+        Sites site = this.sitesRepository.findBySiteId(data.getsite());
+
+        obj.setActif("1");
+        obj.setFullName(data.getFullName());
+        obj.setPassword(hashedPassword);
+        obj.setBackOfficeAccess("1");
+        obj.setLogin(data.getLogin());
+        obj.setEmail(data.getEmail());
+        obj.setRole(data.getRole());
+        obj.setidsite(data.getsite());
+        obj.setPhoneNumber(data.getPhoneNumber());
+
+        obj.setSites(site);
+
+        obj.setRegion(data.getRegion());
 
         userRepository.save(obj);
         return 1;
@@ -109,19 +136,22 @@ public class UsersService {
         if (obj == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist");
         }
+        Sites site = this.siteService.getSiteById(obj.getIDSite());
 
-        String dataBasePass = hashPassword(obj.getPassword());
-        String requestPass = hashPassword(password);
-        boolean status = dataBasePass.equals(requestPass);
+        if (site.getActif() == 1) {
 
-        if (status == true) {
+            String dataBasePass = obj.getPassword();
+            String requestPass = hashPassword(password);
+            boolean status = dataBasePass.equals(requestPass);
 
-            String toekn = jwt.generateToken(obj.getLogin(), 8666660, obj.getUserId(), obj.getRole());
-            System.out.print(toekn);
+            if (status) {
 
-            return ResponseEntity.ok(toekn);
+                String toekn = jwt.generateToken(obj.getLogin(), 8666660, obj.getUserId(), obj.getRole());
+                System.out.print(toekn);
+
+                return ResponseEntity.ok(toekn);
+            }
         }
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 
@@ -132,7 +162,7 @@ public class UsersService {
             return "user not existed";
         } else if (obj != null) {
 
-            obj.setPassword(Newpassword);
+            obj.setPassword(hashPassword(Newpassword));
             this.userRepository.save(obj);
 
         }

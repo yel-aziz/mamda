@@ -3,6 +3,7 @@ package com.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.demo.entity.Compagnie;
 import com.demo.entity.Prospects;
 import com.demo.entity.psp_RendezVous;
+import com.demo.repository.SitesRepository;
 import com.demo.entity.Sites;
 import com.demo.entity.Users;
 import com.dto.ProspectDto;
 import com.dto.RendezVousDTO;
+import com.dto.UserDto;
 import com.dto.psp_TicketDto;
 import com.service.UsersService;
 
@@ -33,11 +36,12 @@ import com.service.SiteService;
 import com.service.TicketService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -113,21 +117,45 @@ public class DemoApplication {
     }
 
     @GetMapping("allUsers")
-    public String getAllUsers(HttpServletRequest request) {
+    public ResponseEntity<?> getAllUsers(HttpServletRequest request) {
 
         String token = request.getHeader("Authorization");
         boolean auto = jwt.validateToken(token);
-        System.out.println("--------------------------------------------------------------");
+        Claims data = jwt.parseToken(token);
+        String role = (String) data.get("role");
+        if ("PDEV".equalsIgnoreCase(role)) {
+            return ResponseEntity.ok(this.Userservice.getAll());
+        } else if ("REGION".equalsIgnoreCase(role)) {
+            int id = data.get("userId", Integer.class);
+            Users obj = this.Userservice.getUserById(id);
+            List<Sites> sitesByRegion = this.siteService.getAllsitesByRegion(obj.getRegion());
 
-        System.out.println(jwt.parseToken(token));
+            List<Sites> activeSites = sitesByRegion.stream()
+            .filter(site -> site.getActif() == 1)
+            .collect(Collectors.toList());
 
-        return token;
+            return ResponseEntity.ok(activeSites);
+
+        }
+        return ResponseEntity.ok("done");
+
+    }
+
+    @GetMapping("getAllProspectByUserId")
+    public ResponseEntity<?> getAllProspectByUserId(@RequestParam("userid") int UserId) {
+        return ResponseEntity.ok(this.prospectservice.getAllProspectsByUserId(UserId));
     }
 
     @DeleteMapping("deleteProspect")
     public void deleteProspect(
             @RequestParam("id") int id) {
         this.prospectservice.deleteProspect(id);
+    }
+
+    @DeleteMapping("deleteTicket")
+    public void deleteTicket(
+            @RequestParam("id") int id) {
+        this.ticketService.deletTicket(id);
     }
 
     @GetMapping("getprospectbyid")
@@ -194,6 +222,7 @@ public class DemoApplication {
         } else if ("REGIONAL".equalsIgnoreCase(role)) {
 
             return this.getAllsitesByRegion(request);
+
         } else if ("PDEV".equalsIgnoreCase(role)) {
 
             return this.getAllSites();
@@ -248,6 +277,13 @@ public class DemoApplication {
 
     }
 
+    @PutMapping("updateUser/{id}")
+    public void updateuser(@ModelAttribute UserDto data, @PathVariable("id") int id) {
+
+        this.Userservice.UpdateUser(data, id);
+
+    }
+
     @DeleteMapping("DeleteRendezvous")
     public void DeleteRendezvous(
             @RequestParam("id") int id) {
@@ -265,9 +301,26 @@ public class DemoApplication {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Updated succefuly");
     }
 
+    @GetMapping("getTicket")
+    public ResponseEntity<?> getTicket() {
+        return ResponseEntity.ok(this.ticketService.getAll());
+    }
+
     @PostMapping("creatTicket")
-    public ResponseEntity<psp_TicketDto> creatTicket(@ModelAttribute psp_TicketDto data) {
-        Users user = this.Userservice.getUserById(1);
+    public ResponseEntity<psp_TicketDto> creatTicket(@ModelAttribute psp_TicketDto data, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        boolean auto = jwt.validateToken(token);
+        if (!auto) {
+            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not
+            // logged");
+        }
+        Claims jwtdata = jwt.parseToken(token);
+        int id = jwtdata.get("userId", Integer.class);
+        Users user = this.Userservice.getUserById(id);
+
+        // Log the received data
+        System.out.println("Received ticket data: " + data);
+
         this.ticketService.creatTicket(data, user);
         return ResponseEntity.ok(data);
     }
@@ -282,7 +335,6 @@ public class DemoApplication {
     @PostMapping("setOfficeToUser")
     public void setOfficeToUser(@RequestParam("officeId") int officeId, @RequestParam("UserId") int UserId) {
         this.Siteservice.SetUserOffice(officeId, UserId);
-
     }
 
     @GetMapping("getAllsites")
@@ -312,7 +364,15 @@ public class DemoApplication {
         // Check the user's role and return sites by region
         if (user.getRole().equalsIgnoreCase("REGIONAL")) {
             List<Sites> sitesByRegion = this.siteService.getAllsitesByRegion(user.getRegion());
-            return ResponseEntity.ok(sitesByRegion);
+
+            List<Sites> activeSites = sitesByRegion.stream()
+            .filter(site ->  site.getActif() == 1)
+            .collect(Collectors.toList());
+
+            return ResponseEntity.ok(activeSites);
+        } else if (user.getRole().equalsIgnoreCase("PDEV")) {
+            List<Sites> allsites = this.siteService.getSites();
+            return ResponseEntity.ok(allsites);
         }
 
         // Return an empty list if the user role is not "PDEV"
@@ -349,16 +409,16 @@ public class DemoApplication {
     }
 
     @PostMapping("CreateProspect")
-    public ResponseEntity<String> CreateProspect(@ModelAttribute ProspectDto obj, HttpServletRequest request) {
+    public ResponseEntity<?> CreateProspect(@ModelAttribute ProspectDto obj, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         boolean auto = jwt.validateToken(token);
         if (!auto) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not logged");
+            //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not logged");
         }
         Claims data = jwt.parseToken(token);
         int id = data.get("userId", Integer.class);
-        this.prospectservice.CreatProspect(id, obj);
-        return ResponseEntity.ok("prospect created");
+        //this.prospectservice.CreatProspect(id, obj);
+        return ResponseEntity.ok(obj);
     }
 
     @PostMapping("AffectationProspect")
@@ -404,13 +464,18 @@ public class DemoApplication {
             }
         } else if ("REGIONAL".equalsIgnoreCase(role)) {
 
-            return this.getAllsitesByRegion(request);
+            return ResponseEntity.ok(this.prospectservice.getAllProspectsByUserId(id));
         } else if ("PDEV".equalsIgnoreCase(role)) {
 
-            return this.getAllSites();
+            return ResponseEntity.ok(this.prospectservice.getAllProspects());
         }
 
         return ResponseEntity.ok(user.getProspects());
+    }
+
+    @PostMapping("updateOfficeStatus")
+    public void updateOfficeStatus(@RequestParam("id") int id, @RequestParam("status") int status) {
+        this.siteService.updateStatus(id, status);
     }
 
     @PostMapping("UpdateRole")
@@ -425,11 +490,13 @@ public class DemoApplication {
     }
 
     @PostMapping("creat")
-    public ResponseEntity<String> CreatUser(@RequestParam("name") String name,
-            @RequestParam("password") String password, @RequestParam("Role") String role,
-            @RequestParam("Region") String region) {
-        this.Userservice.CreatUser(name, password, role, region);
-        return ResponseEntity.ok("user created");
+    public ResponseEntity<?> CreatUser(@ModelAttribute UserDto data) {
+
+        if (this.Userservice.CreatUser(data) == 1) {
+
+            return ResponseEntity.ok("user created");
+        }
+        return ResponseEntity.ok(data);
 
     }
 

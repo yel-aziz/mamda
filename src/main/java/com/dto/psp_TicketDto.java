@@ -2,32 +2,33 @@ package com.dto;
 
 public class psp_TicketDto {
 
-    private int idType;
-    private String libelleT;
-    private char active;
+    private String motif;
+    private String type;
+    private String prospectName;
 
     // Getters and setters
-    public int getIdType() {
-        return idType;
+    public String getType() {
+        return type;
     }
 
-    public void setIdType(int idType) {
-        this.idType = idType;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getLibelleT() {
-        return libelleT;
+    public String getprospectName() {
+        return this.prospectName;
     }
 
-    public void setLibelleT(String libelleT) {
-        this.libelleT = libelleT;
+    public void setprospectName(String name) {
+        this.prospectName = name;
     }
 
-    public char getActive() {
-        return active;
+    public String getmotif() {
+        return motif;
     }
 
-    public void setActive(char active) {
-        this.active = active;
+    public void setmotif(String motif) {
+        this.motif = motif;
     }
+
 }

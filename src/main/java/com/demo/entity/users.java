@@ -18,6 +18,15 @@ public class Users {
     @Column(name = "idsite")
     private int idsite;
 
+    @Column(name = "FullName")
+    private String FullName;
+
+    @Column(name = "Email")
+    private String Email;
+
+    @Column(name = "PhoneNumber")
+    private String PhoneNumber;
+
     @Column(length = 150)
     private String username;
 
@@ -75,6 +84,30 @@ public class Users {
 
     public void setSites(Sites site) {
         this.site = site;
+    }
+
+    public String getEmail() {
+        return this.Email;
+    }
+
+    public String getFullName() {
+        return this.FullName;
+    }
+
+    public void setFullName(String fullname) {
+        this.FullName = fullname;
+    }
+
+    public String getPhoneNumber() {
+        return this.PhoneNumber;
+    }
+
+    public void setPhoneNumber(String PhoneNumber) {
+        this.PhoneNumber = PhoneNumber;
+    }
+
+    public void setEmail(String Email) {
+        this.Email = Email;
     }
 
     public void setidsite(int site) {

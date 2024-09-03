@@ -8,12 +8,12 @@ import com.demo.entity.psp_Ticket;
 
 public interface psp_TicketRepository extends JpaRepository<psp_Ticket, Integer> {
 
-    List<psp_Ticket> findByIdType(int idType);
+    List<psp_Ticket> findByType(String Type);
 
-    List<psp_Ticket> findByLibelleT(String libelleT);
-
-    List<psp_Ticket> findByActive(char active);
+    List<psp_Ticket> findByMotif(String motif);
+    List<psp_Ticket> findAll();
 
     psp_Ticket findById(int id);
+  
 
 }
