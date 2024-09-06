@@ -17,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.demo.entity.Compagnie;
 import com.demo.entity.Prospects;
+import com.demo.entity.ProspectsProduitsLink;
 import com.demo.entity.psp_RendezVous;
 import com.demo.repository.SitesRepository;
 import com.demo.entity.Sites;
@@ -131,8 +132,8 @@ public class DemoApplication {
             List<Sites> sitesByRegion = this.siteService.getAllsitesByRegion(obj.getRegion());
 
             List<Sites> activeSites = sitesByRegion.stream()
-            .filter(site -> site.getActif() == 1)
-            .collect(Collectors.toList());
+                    .filter(site -> site.getActif() == 1)
+                    .collect(Collectors.toList());
 
             return ResponseEntity.ok(activeSites);
 
@@ -366,8 +367,8 @@ public class DemoApplication {
             List<Sites> sitesByRegion = this.siteService.getAllsitesByRegion(user.getRegion());
 
             List<Sites> activeSites = sitesByRegion.stream()
-            .filter(site ->  site.getActif() == 1)
-            .collect(Collectors.toList());
+                    .filter(site -> site.getActif() == 1)
+                    .collect(Collectors.toList());
 
             return ResponseEntity.ok(activeSites);
         } else if (user.getRole().equalsIgnoreCase("PDEV")) {
@@ -408,17 +409,23 @@ public class DemoApplication {
         return ResponseEntity.ok(sites);
     }
 
+    @GetMapping("getProspectProducts")
+    public List<ProspectsProduitsLink> getProspectProducts(@RequestParam("id") int id) {
+        return this.prospectservice.getProducts(id);
+    }
+
     @PostMapping("CreateProspect")
     public ResponseEntity<?> CreateProspect(@ModelAttribute ProspectDto obj, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         boolean auto = jwt.validateToken(token);
         if (!auto) {
-            //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not logged");
+            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not
+            // logged");
         }
         Claims data = jwt.parseToken(token);
         int id = data.get("userId", Integer.class);
-        //this.prospectservice.CreatProspect(id, obj);
-        return ResponseEntity.ok(obj);
+        Prospects pro = this.prospectservice.CreatProspect(id, obj);
+        return ResponseEntity.ok(pro);
     }
 
     @PostMapping("AffectationProspect")

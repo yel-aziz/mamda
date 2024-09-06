@@ -16,9 +16,9 @@ public interface ProspectsRepository extends JpaRepository<Prospects, Integer> {
 
     List<Prospects> findAllByUserId(int userId);
 
-    List<Prospects> findByVilleId(int villeId);
+    List<Prospects> findByVille(String villeId);
 
-    List<Prospects> findByAssureurId(int assureurId);
+    List<Prospects> findByassurenceactuel(String assurenceactuel);
 
     List<Prospects> findByReference(String reference);
 

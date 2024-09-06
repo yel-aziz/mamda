@@ -1,22 +1,15 @@
 package com.demo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import com.dto.ProspectDto;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "prospects")
@@ -33,11 +26,11 @@ public class Prospects {
     @Column(name = "siteId")
     private int siteId;
 
-    @Column(name = "villeId")
-    private int villeId;
+    @Column(name = "ville")
+    private String ville;
 
-    @Column(name = "assureurId")
-    private int assureurId;
+    @Column(name = "assurenceactuel")
+    private String assurenceactuel;
 
     @Column(name = "reference", length = 50)
     private String reference;
@@ -160,12 +153,14 @@ public class Prospects {
         this.setNotes(obj.getNotes());
         this.setCloture(obj.getCloture());
         this.setTypePsp(obj.getTypePsp());
+        this.setAssurance(obj.getAssurance());
 
     }
 
     public Long getProspectId() {
         return prospectId;
     }
+
 
     public void setProspectId(Long prospectId) {
         this.prospectId = prospectId;
@@ -195,20 +190,20 @@ public class Prospects {
         this.user = obj;
     }
 
-    public int getVilleId() {
-        return villeId;
+    public String getVilleId() {
+        return ville;
     }
 
-    public void setVilleId(int villeId) {
-        this.villeId = villeId;
+    public void setVilleId(String ville) {
+        this.ville = ville;
     }
 
-    public int getAssureurId() {
-        return assureurId;
+    public String  getAssurance() {
+        return assurenceactuel;
     }
 
-    public void setAssureurId(int assureurId) {
-        this.assureurId = assureurId;
+    public void setAssurance(String assureur) {
+        this.assurenceactuel = assureur;
     }
 
     public String getReference() {

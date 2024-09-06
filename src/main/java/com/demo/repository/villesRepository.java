@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface villesRepository extends JpaRepository<villes, Integer> {
 
-    List<villes> findByVilleId(int villeId);
 
     List<villes> findByLibelle(String libelle);
 

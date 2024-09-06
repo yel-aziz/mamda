@@ -1,5 +1,6 @@
 package com.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,20 +9,18 @@ public class ProspectsProduitsLink {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prospect_produit_link_id")
     private int prospectProduitLinkId;
 
+    @Column(name = "produit_id")
     private int produitId;
 
-    private int prospectId;
+    @Column(name = "prospect_id")
+    private Long prospectId;
 
 
-    public int getProspectProduitLinkId() {
-        return prospectProduitLinkId;
-    }
+    // Getters and Setters
 
-    public void setProspectProduitLinkId(int prospectProduitLinkId) {
-        this.prospectProduitLinkId = prospectProduitLinkId;
-    }
 
     public int getProduitId() {
         return produitId;
@@ -31,11 +30,12 @@ public class ProspectsProduitsLink {
         this.produitId = produitId;
     }
 
-    public int getProspectId() {
+    public Long getProspectId() {
         return prospectId;
     }
 
-    public void setProspectId(int prospectId) {
+    public void setProspectId(Long prospectId) {
         this.prospectId = prospectId;
     }
+
 }

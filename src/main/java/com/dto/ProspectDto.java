@@ -2,6 +2,8 @@ package com.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Temporal;
@@ -10,11 +12,11 @@ import jakarta.persistence.TemporalType;
 public class ProspectDto {
 
     private String nom;
-    private Integer villeId;
-    private Integer assureurId;
+    private String ville;
+    private String assurance;
     private Integer userId;
     private String reference;
-private int[] produits;
+    private List<Integer> produits;
 
     private Long prospectid;
 
@@ -61,18 +63,18 @@ private int[] produits;
 
     // Getters and setters
 
-    public Long getPropectId(){
+    public Long getPropectId() {
         return prospectid;
     }
 
-    public void setProduits(int[] a){
+    public void setProduits(List<Integer> a) {
         this.produits = a;
     }
 
-    public int[] getProduits(){
+    public List<Integer> getProduits() {
         return this.produits;
     }
-    
+
     public int getUserId() {
         return userId;
     }
@@ -81,21 +83,20 @@ private int[] produits;
         this.userId = userId;
     }
 
-  
-    public int getVilleId() {
-        return villeId;
+    public String getVilleId() {
+        return ville;
     }
 
-    public void setVilleId(int villeId) {
-        this.villeId = villeId;
+    public void setVilleId(String villeId) {
+        this.ville = villeId;
     }
 
-    public int getAssureurId() {
-        return assureurId;
+    public String getAssurance() {
+        return this.assurance;
     }
 
-    public void setAssureurId(int assureurId) {
-        this.assureurId = assureurId;
+    public void setAssurance(String assureurId) {
+        this.assurance = assureurId;
     }
 
     public String getReference() {
