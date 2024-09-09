@@ -3,6 +3,7 @@ package com.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Producer;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.demo.entity.Compagnie;
+import com.demo.entity.Produits;
 import com.demo.entity.Prospects;
 import com.demo.entity.ProspectsProduitsLink;
 import com.demo.entity.psp_RendezVous;
@@ -142,11 +144,6 @@ public class DemoApplication {
 
     }
 
-    @GetMapping("getAllProspectByUserId")
-    public ResponseEntity<?> getAllProspectByUserId(@RequestParam("userid") int UserId) {
-        return ResponseEntity.ok(this.prospectservice.getAllProspectsByUserId(UserId));
-    }
-
     @DeleteMapping("deleteProspect")
     public void deleteProspect(
             @RequestParam("id") int id) {
@@ -233,7 +230,7 @@ public class DemoApplication {
     }
 
     @PutMapping("UpdateProspect")
-    public ResponseEntity<Prospects> UpdateProspect(@ModelAttribute ProspectDto obj,
+    public ResponseEntity<?> UpdateProspect(@ModelAttribute ProspectDto obj,
             @RequestParam("prospectId") Long prospectId, HttpServletRequest request) {
 
         String token = request.getHeader("Authorization");
@@ -248,9 +245,9 @@ public class DemoApplication {
         int userId = data.get("userId", Integer.class);
 
         Prospects pro = prospectservice.getProspects(prospectId);
-        this.prospectservice.updateProspect(pro, obj);
+        return this.prospectservice.updateProspect(pro, obj);
 
-        return ResponseEntity.ok(pro);
+     //   return ResponseEntity.ok(objj);
 
     }
 
@@ -410,8 +407,9 @@ public class DemoApplication {
     }
 
     @GetMapping("getProspectProducts")
-    public List<ProspectsProduitsLink> getProspectProducts(@RequestParam("id") int id) {
-        return this.prospectservice.getProducts(id);
+    public void getProspectProducts(@RequestParam("id") int id) {
+       // return this.prospectservice.getProducts(id);
+       //return List<"done">
     }
 
     @PostMapping("CreateProspect")
@@ -426,6 +424,33 @@ public class DemoApplication {
         int id = data.get("userId", Integer.class);
         Prospects pro = this.prospectservice.CreatProspect(id, obj);
         return ResponseEntity.ok(pro);
+    }
+
+    @GetMapping("getProspectsByUser")
+    public ResponseEntity<?> getProspectsByUser(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        boolean auto = jwt.validateToken(token);
+        if (!auto) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not  logged");
+        }
+        Claims data = jwt.parseToken(token);
+        int id = data.get("userId", Integer.class);
+        return ResponseEntity.ok(this.prospectservice.getAllProspectsByUserId(id));
+    }
+
+    @GetMapping("getUserId")
+    public ResponseEntity<?> getUserId(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        boolean auto = jwt.validateToken(token);
+        if (!auto) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not  logged");
+        }
+        Claims data = jwt.parseToken(token);
+        String role = data.get("role", String.class);
+        if ("REGIONAL".equalsIgnoreCase(role) || "PDEV".equalsIgnoreCase(role)) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
     }
 
     @PostMapping("AffectationProspect")

@@ -17,8 +17,8 @@ public class Prospects {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "prospectId")
-    private Long prospectId;
+    @Column(name = "prospect_Id")
+    private Integer prospectId;
 
     @Column(name = "userId")
     private int userId;
@@ -91,6 +91,19 @@ public class Prospects {
     @JsonBackReference
     private Users user;
 
+
+    @OneToMany(mappedBy = "prospect", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ProspectsProduitsLink> produits = new ArrayList<>();
+
+    public List<ProspectsProduitsLink> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(List<ProspectsProduitsLink> produits) {
+        this.produits = produits;
+    }
+
     @Column(name = "suiteProg", length = 150)
     private String suiteProg;
 
@@ -157,12 +170,12 @@ public class Prospects {
 
     }
 
-    public Long getProspectId() {
+    public Integer getProspectId() {
         return prospectId;
     }
 
 
-    public void setProspectId(Long prospectId) {
+    public void setProspectId(Integer prospectId) {
         this.prospectId = prospectId;
     }
 

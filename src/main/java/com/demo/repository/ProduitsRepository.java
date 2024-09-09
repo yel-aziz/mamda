@@ -19,5 +19,4 @@ public interface ProduitsRepository extends JpaRepository<Produits, Integer> {
 
     List<Produits> findByActif(char actif);
 
-    
 }

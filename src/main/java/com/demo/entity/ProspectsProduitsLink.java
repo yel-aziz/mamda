@@ -16,9 +16,26 @@ public class ProspectsProduitsLink {
     private int produitId;
 
     @Column(name = "prospect_id")
-    private Long prospectId;
+    private Integer prospectId;
 
 
+    @ManyToOne
+    @JoinColumn(name = "prosid")
+    @JsonBackReference
+    private Prospects prospect;
+
+    public Integer getProspectId() {
+        return this.prospectId;
+    }
+
+
+    public Prospects getProspect() {
+        return prospect;
+    }
+
+    public void setProspect(Prospects prospect) {
+        this.prospect = prospect;
+    }
     // Getters and Setters
 
 
@@ -30,11 +47,8 @@ public class ProspectsProduitsLink {
         this.produitId = produitId;
     }
 
-    public Long getProspectId() {
-        return prospectId;
-    }
-
-    public void setProspectId(Long prospectId) {
+ 
+    public void setProspectId(Integer prospectId) {
         this.prospectId = prospectId;
     }
 

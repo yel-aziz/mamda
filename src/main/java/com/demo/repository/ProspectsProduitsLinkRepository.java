@@ -12,5 +12,5 @@ public interface ProspectsProduitsLinkRepository extends JpaRepository<Prospects
 
     List<ProspectsProduitsLink> findByProduitId(int produitId);
 
-    List<ProspectsProduitsLink> findByProspectId(int prospectId);
+    List<ProspectsProduitsLink> findByProspectId(Integer prospectId);
 }

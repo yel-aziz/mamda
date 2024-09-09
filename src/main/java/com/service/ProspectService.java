@@ -2,14 +2,18 @@ package com.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import com.demo.entity.Prospects;
+import com.demo.entity.Produits;
 import com.demo.entity.ProspectsProduitsLink;
 import com.demo.entity.Users;
+import com.demo.repository.ProduitsRepository;
 import com.demo.repository.ProspectsProduitsLinkRepository;
 import com.demo.repository.ProspectsRepository;
 import com.demo.repository.UsersRepository;
@@ -27,7 +31,7 @@ public class ProspectService {
     private ProspectsProduitsLinkRepository prospectlink;
 
     @Autowired
-    private ProspectsProduitsLinkRepository produitrepo;
+    private ProduitsRepository produitrepo;
 
     public ProspectService(ProspectsRepository prospectsrepository, UsersRepository userRepository) {
         this.prospectsRepository = prospectsrepository;
@@ -51,13 +55,14 @@ public class ProspectService {
 
         this.prospectsRepository.save(pros);
         List<Integer> pro = obj.getProduits();
-
         for (Integer productId : pro) {
-            ProspectsProduitsLink produitLink = new ProspectsProduitsLink();
-            produitLink.setProduitId(productId);
-            produitLink.setProspectId(pros.getProspectId());
-            this.produitrepo.save(produitLink);
+            // Retrieve existing product or create new product entity
+            ProspectsProduitsLink produit = new ProspectsProduitsLink();
 
+            produit.setProspect(pros);
+
+            produit.setProspectId(pros.getProspectId()); // Save the Product entity
+            this.prospectlink.save(produit);
         }
 
         return pros;
@@ -65,10 +70,6 @@ public class ProspectService {
 
     public Prospects getProspects(Long id) {
         return this.prospectsRepository.findByProspectId(id);
-    }
-
-    public List<ProspectsProduitsLink> getProducts(int id) {
-        return this.prospectlink.findByProspectId(id);
     }
 
     public List<Prospects> getAllProspects() {
@@ -79,10 +80,11 @@ public class ProspectService {
         return this.prospectsRepository.findAllByUserId(id);
     }
 
-    public ResponseEntity<String> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {
-        pro.ProspectsUpdate(obj);
-        prospectsRepository.save(pro);
-        return ResponseEntity.ok("updated");
+    public ResponseEntity<?> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {
+        List<Integer> prod = obj.getProduits();
+        List<ProspectsProduitsLink> existingProducts = pro.getProduits();
+
+        return ResponseEntity.ok(existingProducts);
 
     }
 
