@@ -18,7 +18,7 @@ public class ProspectDto {
     private String reference;
     private List<Integer> produits;
 
-    private Long prospectid;
+    private Integer prospectid;
 
     private String adresse;
 
@@ -63,7 +63,7 @@ public class ProspectDto {
 
     // Getters and setters
 
-    public Long getPropectId() {
+    public Integer getPropectId() {
         return prospectid;
     }
 

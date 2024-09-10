@@ -60,6 +60,7 @@ public class ProspectService {
             ProspectsProduitsLink produit = new ProspectsProduitsLink();
 
             produit.setProspect(pros);
+            produit.setProduitId(productId);
 
             produit.setProspectId(pros.getProspectId()); // Save the Product entity
             this.prospectlink.save(produit);
@@ -81,10 +82,68 @@ public class ProspectService {
     }
 
     public ResponseEntity<?> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {
-        List<Integer> prod = obj.getProduits();
+        List<Integer> newProductIds = obj.getProduits();
         List<ProspectsProduitsLink> existingProducts = pro.getProduits();
+        List<Integer> existingProductIds = new ArrayList<>();
 
-        return ResponseEntity.ok(existingProducts);
+        for (ProspectsProduitsLink link : existingProducts) {
+            existingProductIds.add(link.getProduitId());
+        }
+
+        List<Integer> productsToAdd = new ArrayList<>();
+        List<Integer> productsToRemove = new ArrayList<>();
+        List<Integer> productlinkId = new ArrayList<>();
+
+        // Determine products to add
+        for (Integer newProductId : newProductIds) {
+            if (!existingProductIds.contains(newProductId)) {
+                productsToAdd.add(newProductId);
+            }
+        }
+
+        for (Integer productIdToAdd : productsToAdd) {
+            ProspectsProduitsLink newLink = new ProspectsProduitsLink();
+            newLink.setProspectId(pro.getProspectId()); // Assuming getId() returns the prospect's ID
+            newLink.setProspect(pro);
+
+            newLink.setProduitId(productIdToAdd);
+            this.prospectlink.save(newLink);
+        }
+
+        // Determine products to remove
+        for (Integer existingProductId : existingProductIds) {
+            if (!newProductIds.contains(existingProductId)) {
+                productsToRemove.add(existingProductId);
+            }
+        }
+
+        for (ProspectsProduitsLink link : existingProducts) {
+            Integer i = link.getProduitId();
+            if (productsToRemove.contains(i)) {
+                productlinkId.add(link.getProspectProduitLinkId());
+            this.prospectlink.deleteById(link.getProspectProduitLinkId());
+
+            }
+
+            // System.out.println("Products to Remove from loop 3 : \n" + link);
+
+        }
+
+        for (Integer productIdToRemove : productsToRemove) {
+            ProspectsProduitsLink linkToRemove = this.prospectlink.findByProspectIdAndProduitId(pro.getProspectId(),
+                    productIdToRemove);
+
+            System.out.println("Products to Remove from loop:  " + productsToRemove);
+
+            this.prospectlink.delete(linkToRemove);
+
+        }
+
+        // Output the results (for debugging purposes)
+        System.out.println("Products to Add: " + productsToAdd);
+        System.out.println("Products to Remove: " + productsToRemove);
+        System.out.println("Products id to Remove: " + productlinkId);
+        return ResponseEntity.ok(existingProductIds);
 
     }
 

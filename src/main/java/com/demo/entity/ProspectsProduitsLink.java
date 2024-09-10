@@ -13,7 +13,7 @@ public class ProspectsProduitsLink {
     private int prospectProduitLinkId;
 
     @Column(name = "produit_id")
-    private int produitId;
+    private Integer produitId;
 
     @Column(name = "prospect_id")
     private Integer prospectId;
@@ -26,6 +26,12 @@ public class ProspectsProduitsLink {
 
     public Integer getProspectId() {
         return this.prospectId;
+    }
+    public Integer getProspectProduitLinkId() {
+        return this.prospectProduitLinkId;
+    }
+    public Integer setprospectProduitLinkId(int produitId) {
+        return this.prospectProduitLinkId = produitId;
     }
 
 
