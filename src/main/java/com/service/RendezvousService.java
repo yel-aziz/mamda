@@ -1,4 +1,6 @@
 package com.service;
+import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,10 @@ public class RendezvousService {
     public psp_RendezVous getRendeVous(Long userId) {
         psp_RendezVous rendevous = this.Rendezvousrepo.findByIdRDV(userId);
         return rendevous;
+    }
+
+    public  List<psp_RendezVous> getAllRendevous(){
+        return this.Rendezvousrepo.findAll();
     }
 
     public void updateRendevous(psp_RendezVous pro, @ModelAttribute RendezVousDTO obj) {

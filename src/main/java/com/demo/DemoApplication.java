@@ -73,8 +73,6 @@ public class DemoApplication {
 
     @Autowired
     private SiteService siteService;
-    @Autowired
-    private ProspectLinkService linkservice;
 
     @Autowired
     private ProspectService prospectservice;
@@ -140,6 +138,10 @@ public class DemoApplication {
 
         String token = request.getHeader("Authorization");
         boolean auto = jwt.validateToken(token);
+        if (!auto) {
+            // return ResponseEntity.badRequest();
+
+        }
         Claims data = jwt.parseToken(token);
         String role = (String) data.get("role");
         if ("PDEV".equalsIgnoreCase(role)) {
@@ -235,11 +237,13 @@ public class DemoApplication {
             }
         } else if ("REGIONAL".equalsIgnoreCase(role)) {
 
-            return this.getAllsitesByRegion(request);
+            // return this.getAllsitesByRegion(request);
+            return ResponseEntity.ok(this.rendezvousservice.getAllRendevous());
 
         } else if ("PDEV".equalsIgnoreCase(role)) {
 
-            return this.getAllSites();
+            return ResponseEntity.ok(this.rendezvousservice.getAllRendevous());
+
         }
 
         return ResponseEntity.ok(user.getRendezvous());
@@ -270,7 +274,7 @@ public class DemoApplication {
 
     }
 
-    @PostMapping("CreatProduit")
+    @PostMapping("CreatProduct")
     public void CreatProduit() {
         this.produitService.CreatProduct();
     }
