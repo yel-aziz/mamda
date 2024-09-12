@@ -8,10 +8,12 @@ import com.demo.entity.ProspectsProduitsLink;
 
 public interface ProspectsProduitsLinkRepository extends JpaRepository<ProspectsProduitsLink, Integer> {
 
-    List<ProspectsProduitsLink> findByProspectProduitLinkId(int prospectProduitLinkId);
-    ProspectsProduitsLink  findByProspectIdAndProduitId(Integer id,Integer produitid);
+    ProspectsProduitsLink findByProspectProduitLinkId(int prospectProduitLinkId);
+
+    ProspectsProduitsLink findByProspectIdAndProduitId(Integer id, Integer produitid);
 
     List<ProspectsProduitsLink> findByProduitId(int produitId);
 
     List<ProspectsProduitsLink> findByProspectId(Integer prospectId);
+
 }

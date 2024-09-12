@@ -2,15 +2,10 @@ package com.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import com.demo.entity.Prospects;
-import com.demo.entity.Produits;
 import com.demo.entity.ProspectsProduitsLink;
 import com.demo.entity.Users;
 import com.demo.repository.ProduitsRepository;
@@ -81,18 +76,28 @@ public class ProspectService {
         return this.prospectsRepository.findAllByUserId(id);
     }
 
-    public ResponseEntity<?> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {
+    public List<ProspectsProduitsLink> getAllProductsProspect(int id) {
+        return this.prospectlink.findByProspectId(id);
+    }
+
+    public void deleteprospectlink(int id) {
+        this.prospectlink.deleteById(id);
+    }
+
+    public List<Integer> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {
+
         List<Integer> newProductIds = obj.getProduits();
         List<ProspectsProduitsLink> existingProducts = pro.getProduits();
         List<Integer> existingProductIds = new ArrayList<>();
+        pro.ProspectsUpdate(obj);
 
+        // Collect existing product IDs
         for (ProspectsProduitsLink link : existingProducts) {
             existingProductIds.add(link.getProduitId());
         }
 
         List<Integer> productsToAdd = new ArrayList<>();
         List<Integer> productsToRemove = new ArrayList<>();
-        List<Integer> productlinkId = new ArrayList<>();
 
         // Determine products to add
         for (Integer newProductId : newProductIds) {
@@ -101,11 +106,11 @@ public class ProspectService {
             }
         }
 
+        // Add new products
         for (Integer productIdToAdd : productsToAdd) {
             ProspectsProduitsLink newLink = new ProspectsProduitsLink();
-            newLink.setProspectId(pro.getProspectId()); // Assuming getId() returns the prospect's ID
+            newLink.setProspectId(pro.getProspectId());
             newLink.setProspect(pro);
-
             newLink.setProduitId(productIdToAdd);
             this.prospectlink.save(newLink);
         }
@@ -117,34 +122,26 @@ public class ProspectService {
             }
         }
 
+        // Identify which product links to remove and remove them from the collection
+        List<ProspectsProduitsLink> linksToRemove = new ArrayList<>();
         for (ProspectsProduitsLink link : existingProducts) {
-            Integer i = link.getProduitId();
-            if (productsToRemove.contains(i)) {
-                productlinkId.add(link.getProspectProduitLinkId());
-            this.prospectlink.deleteById(link.getProspectProduitLinkId());
-
+            Integer produitId = link.getProduitId();
+            if (productsToRemove.contains(produitId)) {
+                linksToRemove.add(link); // Mark for removal
             }
-
-            // System.out.println("Products to Remove from loop 3 : \n" + link);
-
         }
 
-        for (Integer productIdToRemove : productsToRemove) {
-            ProspectsProduitsLink linkToRemove = this.prospectlink.findByProspectIdAndProduitId(pro.getProspectId(),
-                    productIdToRemove);
+        // Remove orphans from the collection
+        existingProducts.removeAll(linksToRemove);
 
-            System.out.println("Products to Remove from loop:  " + productsToRemove);
+        // Save the updated state
+        this.prospectsRepository.save(pro);
 
-            this.prospectlink.delete(linkToRemove);
-
-        }
-
-        // Output the results (for debugging purposes)
+        // Debugging output
         System.out.println("Products to Add: " + productsToAdd);
         System.out.println("Products to Remove: " + productsToRemove);
-        System.out.println("Products id to Remove: " + productlinkId);
-        return ResponseEntity.ok(existingProductIds);
 
+        return productsToRemove;
     }
 
     public void deleteProspect(int id) {

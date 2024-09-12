@@ -33,6 +33,8 @@ import com.service.UsersService;
 import io.jsonwebtoken.Claims;
 
 import com.service.CompagnieService;
+import com.service.ProduitService;
+import com.service.ProspectLinkService;
 import com.service.ProspectService;
 import com.service.RendezvousService;
 import com.service.SiteService;
@@ -62,9 +64,13 @@ public class DemoApplication {
 
     @Autowired
     private UsersService Userservice;
+    @Autowired
+    private ProduitService produitService;
 
     @Autowired
     private SiteService siteService;
+    @Autowired
+    private ProspectLinkService linkservice;
 
     @Autowired
     private ProspectService prospectservice;
@@ -233,6 +239,7 @@ public class DemoApplication {
     public ResponseEntity<?> UpdateProspect(@ModelAttribute ProspectDto obj,
             @RequestParam("prospectId") Long prospectId, HttpServletRequest request) {
 
+   //     this.linkservice.deleteprospectlink(1);
         String token = request.getHeader("Authorization");
         boolean auto = jwt.validateToken(token);
 
@@ -245,10 +252,17 @@ public class DemoApplication {
         int userId = data.get("userId", Integer.class);
 
         Prospects pro = prospectservice.getProspects(prospectId);
-        return this.prospectservice.updateProspect(pro, obj);
+        List<Integer> ids = this.prospectservice.updateProspect(pro, obj);
 
-     //   return ResponseEntity.ok(objj);
+        // this.linkservice.deleteprospectlink(1);
 
+        return ResponseEntity.ok("done");
+
+    }
+
+    @PostMapping("CreatProduit")
+    public void CreatProduit() {
+        this.produitService.CreatProduct();
     }
 
     @PutMapping("UpdateRendevous")
@@ -407,9 +421,10 @@ public class DemoApplication {
     }
 
     @GetMapping("getProspectProducts")
-    public void getProspectProducts(@RequestParam("id") int id) {
-       // return this.prospectservice.getProducts(id);
-       //return List<"done">
+    public List<ProspectsProduitsLink> getProspectProducts(@RequestParam("id") int id) {
+        // this.prospectservice.deleteprospectlink(1);
+        return this.prospectservice.getAllProductsProspect(id);
+        // return List<"done">
     }
 
     @PostMapping("CreateProspect")
