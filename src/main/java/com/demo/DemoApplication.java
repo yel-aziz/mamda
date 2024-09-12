@@ -24,6 +24,7 @@ import com.demo.entity.psp_RendezVous;
 import com.demo.repository.SitesRepository;
 import com.demo.entity.Sites;
 import com.demo.entity.Users;
+import com.dto.EntityCountDTO;
 import com.dto.ProspectDto;
 import com.dto.RendezVousDTO;
 import com.dto.UserDto;
@@ -33,6 +34,7 @@ import com.service.UsersService;
 import io.jsonwebtoken.Claims;
 
 import com.service.CompagnieService;
+import com.service.EntityCountService;
 import com.service.ProduitService;
 import com.service.ProspectLinkService;
 import com.service.ProspectService;
@@ -64,6 +66,8 @@ public class DemoApplication {
 
     @Autowired
     private UsersService Userservice;
+    @Autowired
+    private EntityCountService entitycount;
     @Autowired
     private ProduitService produitService;
 
@@ -123,6 +127,12 @@ public class DemoApplication {
 
         this.rendezvousservice.CreatRendezVous(obj, id);
 
+    }
+
+    @GetMapping("getnumbers")
+    public EntityCountDTO getEntityCounts() {
+
+        return this.entitycount.getEntityCounts();
     }
 
     @GetMapping("allUsers")
@@ -239,7 +249,7 @@ public class DemoApplication {
     public ResponseEntity<?> UpdateProspect(@ModelAttribute ProspectDto obj,
             @RequestParam("prospectId") Long prospectId, HttpServletRequest request) {
 
-   //     this.linkservice.deleteprospectlink(1);
+        // this.linkservice.deleteprospectlink(1);
         String token = request.getHeader("Authorization");
         boolean auto = jwt.validateToken(token);
 

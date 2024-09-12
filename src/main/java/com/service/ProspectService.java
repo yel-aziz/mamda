@@ -84,6 +84,9 @@ public class ProspectService {
         this.prospectlink.deleteById(id);
     }
 
+    public Long getNumber(){
+        return this.prospectsRepository.count();
+    }
     public List<Integer> updateProspect(Prospects pro, @ModelAttribute ProspectDto obj) {
 
         List<Integer> newProductIds = obj.getProduits();

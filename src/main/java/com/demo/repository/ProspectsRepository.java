@@ -9,6 +9,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 
 public interface ProspectsRepository extends JpaRepository<Prospects, Integer> {
+    long count();
 
     Prospects findByProspectId(Long prospectId);
 

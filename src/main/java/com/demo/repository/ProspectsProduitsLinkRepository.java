@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.demo.entity.ProspectsProduitsLink;
 
 public interface ProspectsProduitsLinkRepository extends JpaRepository<ProspectsProduitsLink, Integer> {
+    long count();
 
     ProspectsProduitsLink findByProspectProduitLinkId(int prospectProduitLinkId);
 

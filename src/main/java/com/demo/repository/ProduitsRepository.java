@@ -10,6 +10,7 @@ import com.demo.entity.Produits;
 @Repository
 
 public interface ProduitsRepository extends JpaRepository<Produits, Integer> {
+    long count();
 
     List<Produits> findBySociteId(int societe_id);
 

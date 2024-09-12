@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public interface ProspectsClotureRepository extends JpaRepository<ProspectsCloture, Integer> {
+    long count();
 
     List<ProspectsCloture> findByIdProspectCloture(int idProspectCloture);
 
